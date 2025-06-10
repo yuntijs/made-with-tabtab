@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [1.0.1](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.0...v1.0.1) (2025-06-10)
+
+
+### 🐛 Bug Fixes
+
+* Miss build ([b65dcdd](https://github.com/yuntijs/made-with-tabtab/commit/b65dcdd))
+
 # 1.0.0 (2025-06-10)
 
 
