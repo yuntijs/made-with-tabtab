@@ -39,6 +39,9 @@ jobs:
       - name: Lint check
         run: npm run ci
 
+      - name: Build
+        run: npm run build
+
       - name: Release
         run: npm run release
         env:
