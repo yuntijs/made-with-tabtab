@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [1.0.2](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.1...v1.0.2) (2025-06-10)
+
+
+### 🐛 Bug Fixes
+
+* 保存 pdf 使用 window.print ([a92aed2](https://github.com/yuntijs/made-with-tabtab/commit/a92aed2))
+
 ## [1.0.1](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.0...v1.0.1) (2025-06-10)
 
 
