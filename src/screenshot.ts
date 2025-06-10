@@ -1,28 +1,23 @@
 import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 
 export interface tabtabToolsProps {
-  id?: string;
-  pngScale?: number;
-  pdfScale?: number;
+  imgScale?: number;
+  imgWidth?: number;
 }
 
 export class tabtabTools {
-  id: string;
-  pngScale: number;
-  pdfScale: number;
+  imgScale: number;
+  imgWidth: number;
 
   constructor(options?: tabtabToolsProps) {
-    const { id, pngScale, pdfScale } = options || {};
-    this.id = id || 'exportToCanvas';
-    this.pngScale = pngScale || 1.025;
-    this.pdfScale = pdfScale || 1.25;
+    const { imgScale, imgWidth } = options || {};
+    this.imgScale = imgScale || 1;
+    this.imgWidth = imgWidth || 1600;
   }
 
   setInitValue = (options?: tabtabToolsProps) => {
-    if (options?.id) this.id = options?.id;
-    if (options?.pngScale) this.pngScale = options?.pngScale;
-    if (options?.pdfScale) this.pdfScale = options?.pdfScale;
+    if (options?.imgScale) this.imgScale = options?.imgScale;
+    if (options?.imgWidth) this.imgWidth = options?.imgWidth;
   }
 
   addStyle = (content: string) => {
@@ -59,22 +54,32 @@ export class tabtabTools {
     if (pdfIcon) pdfIcon.onclick = () => this.exportPdf();
   }
 
-  exportPng = async () => {
-    const element = document.getElementById(this.id);
-    if (!element) return console.warn('Element not found!');
+  showToolsIcon = () => {
+    const ele = document.querySelector('.tabtab-active-wrapper') as HTMLElement;
+    if (ele) {
+      ele.style.display = 'block';
+    }
+  }
 
+  hideToolsIcon = () => {
+    const ele = document.querySelector('.tabtab-active-wrapper') as HTMLElement;
+    if (ele) {
+      ele.style.display = 'none';
+    }
+  }
+
+  exportPng = async () => {
+    const element = document.body || document.documentElement;
+    if (!element) return console.warn('Element not found!');
+    this.hideToolsIcon();
     const clone = element.cloneNode(true) as HTMLElement;
     clone.style.position = 'absolute';
     clone.style.left = '-9999px';
     clone.style.top = '0';
+    clone.style.width = `${this.imgWidth}px`;
     document.body.appendChild(clone);
-
-    const contentHeight = clone.scrollHeight * this.pngScale;
+    const contentHeight = clone.scrollHeight * this.imgScale;
     const contentWidth = clone.scrollWidth;
-
-    if (!html2canvas) {
-      return console.warn('html2canvas not loaded!');
-    }
 
     try {
       const canvas = await html2canvas(element, {
@@ -91,112 +96,94 @@ export class tabtabTools {
       return canvas.toDataURL('image/png', 1);
     } finally {
       document.body.removeChild(clone);
+      this.showToolsIcon();
     }
   }
 
   downloadPng = async (filename = 'screenshot.png') => {
-    const data = await this.exportPng();
-    if (!data) return;
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = data as string;
-    link.click();
-    link.remove();
+    const scrollHeight = (document.body || document.documentElement).scrollHeight;
+    let isScrollTo = false;
+    const startDownload = async () => {
+      const data = await this.exportPng();
+      if (!data) return;
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = data as string;
+      link.click();
+      link.remove();
+    }
+    window.onscroll = async () => {
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const totalHeight = document.body.offsetHeight;
+      if (!isScrollTo && scrollPosition >= totalHeight) {
+        isScrollTo = true;
+        await this.sleep(1000);
+        window.onscroll = null;
+        startDownload();
+      }
+    };
+    window.scrollTo({
+      top: scrollHeight,
+      behavior: 'smooth'
+    });
+    await this.sleep(5000);
+    if (!isScrollTo) {
+      window.onscroll = null;
+      startDownload();
+    }
   }
 
-  exportPdf = async (filename = 'document.pdf') => {
-    const element = document.getElementById(this.id);
-    if (!element) return console.warn('Element not found!');
-    // const { jsPDF } = window.jspdf;
-    if (!jsPDF) {
-      return console.warn('jsPDF not loaded!');
+  sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  exportPdf = async () => {
+    const ele = document.body || document.documentElement;
+    let isScrollTo = false;
+    window.onscroll = async () => {
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const totalHeight = document.body.offsetHeight;
+      if (!isScrollTo && scrollPosition >= totalHeight) {
+        isScrollTo = true;
+        await this.sleep(1000);
+        window.onscroll = null;
+        window.print();
+      }
     }
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    // PDF页面尺寸和边距设置
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 10;
-    const contentWidth = pageWidth - 2 * margin;
-    const contentHeightMM = pageHeight - 2 * margin;
-    const mmToPxFactor = 3.78;
-    const scale = 2;
-
-    // 计算每页内容高度（像素）
-    const contentHeightPx = contentHeightMM * mmToPxFactor * this.pdfScale; // 1mm ≈ 3.78px
-
-    const clone = element.cloneNode(true) as HTMLElement;
-    clone.style.position = 'absolute';
-    clone.style.left = '-9999px';
-    clone.style.top = '0';
-    clone.style.width = `${contentWidth * 1.25}mm`;
-    document.body.appendChild(clone);
-
-    try {
-      if (!html2canvas) {
-        return console.warn('html2canvas not loaded!');
-      }
-      let position = 0;
-      while (position < clone.scrollHeight + contentHeightPx) {
-        const canvas = await html2canvas(clone, {
-          scale: scale,
-          logging: false,
-          useCORS: true,
-          allowTaint: true,
-          scrollY: position,
-          windowHeight: contentHeightPx,
-          windowWidth: clone.scrollWidth,
-          x: 0,
-          y: position,
-          height: contentHeightPx,
-          width: clone.scrollWidth
-        });
-
-        // 计算图片在PDF中的高度
-        const imgHeight = (canvas.height * contentWidth) / canvas.width;
-        const imgData = canvas.toDataURL('image/png', 1.0);
-        // 添加新页（第一页不需要添加）
-        if (position > 0) {
-          pdf.addPage();
-        }
-
-        // 添加图片到PDF
-        pdf.addImage(
-          imgData,
-          'PNG',
-          margin,
-          margin,
-          contentWidth,
-          imgHeight
-        );
-
-        // 更新位置
-        position += contentHeightPx;
-      }
-      // 保存PDF
-      pdf.save(filename);
-      return true;
-    } finally {
-      document.body.removeChild(clone);
+    window.scrollTo({
+      top: ele.scrollHeight,
+      behavior: 'smooth'
+    });
+    await this.sleep(5000);
+    if (!isScrollTo) {
+      window.onscroll = null;
+      window.print();
     }
   }
 }
 
 window.addEventListener('load', () => {
   const tools = new tabtabTools();
-  tools.addStyle(`.tabtab-active-wrapper {
+  tools.addStyle(`@media print {
+          .tabtab-active-wrapper {
+            display: none;
+          }
+        }
+        img,svg {
+          display: unset !important;
+        }
+        .tabtab-active-wrapper {
             position: fixed;
             z-index: 1000;
             right: 20px;
-            bottom: 50px;
+            bottom: 20px;
         }
         .tabtab-tools {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
+            font-size: 14px;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
             text-align: center;
             color: #fff;
             cursor: pointer;
@@ -216,11 +203,11 @@ window.addEventListener('load', () => {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            width: 40px;
-            height: 40px;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
             margin-top: 10px;
-            line-height: 40px;
+            line-height: 32px;
             text-align: center;
             color: #fff;
             cursor: pointer;

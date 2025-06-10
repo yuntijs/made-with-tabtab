@@ -5,25 +5,29 @@
     <title>Title</title>
 </head>
 <style>
-    body{
+    body,html {
         margin: 0;
+        height: 100%;
     }
 </style>
 <body>
-<iframe width="100%" height="800px" frameborder="none" id="external-iframe" src="http://localhost:63342/made-with-tabtab/demos/index2.html"></iframe>
+<!--<iframe width="100%" height="800px" frameborder="none" id="external-iframe" src="http://localhost:63342/made-with-tabtab/demos/index2.html"></iframe>-->
+<iframe width="100%" height="100%" frameborder="none" id="external-iframe" src="http://localhost:33001/"></iframe>
 <img id="img" width="100%" src="" alt="">
 </body>
 </html>
 <script>
   const iframe = document.getElementById('external-iframe');
-
   iframe.onload = () => {
-      // 发送消息让iframe准备截图
-      // iframe.contentWindow.postMessage({ action: 'prepareScreenshot' }, '*');
-      // 发送消息让iframe准备生成pdf文件
-      // iframe.contentWindow.postMessage({ action: 'prepareGeneratePdf' }, '*');
-      // 发送消息让iframe设置初始值
-      // iframe.contentWindow.postMessage({ action: 'setInitValue', values: { id: 'exportToCanvas', pngScale: 1, pdfScale: 1 } }, '*');
+      setTimeout(() => {
+          // 发送消息让iframe设置初始值
+          iframe.contentWindow.postMessage({ action: 'setInitValue', values: { imgScale: 1, imgWidth: 1600 } }, '*');
+          // 发送消息让iframe准备截图
+          // iframe.contentWindow.postMessage({ action: 'prepareScreenshot' }, '*');
+          // 发送消息让iframe准备生成pdf文件
+          // iframe.contentWindow.postMessage({ action: 'prepareGeneratePdf' }, '*');
+      }, 2000);
+
 
     // 监听iframe返回的消息
     window.addEventListener('message', (event) => {
