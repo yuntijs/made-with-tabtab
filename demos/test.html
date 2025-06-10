@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    body{
+        margin: 0;
+    }
+</style>
+<body>
+<iframe width="100%" height="800px" frameborder="none" id="external-iframe" src="http://localhost:63342/made-with-tabtab/demos/index2.html"></iframe>
+<img id="img" width="100%" src="" alt="">
+</body>
+</html>
+<script>
+  const iframe = document.getElementById('external-iframe');
+
+  iframe.onload = () => {
+      // 发送消息让iframe准备截图
+      // iframe.contentWindow.postMessage({ action: 'prepareScreenshot' }, '*');
+      // 发送消息让iframe准备生成pdf文件
+      // iframe.contentWindow.postMessage({ action: 'prepareGeneratePdf' }, '*');
+      // 发送消息让iframe设置初始值
+      // iframe.contentWindow.postMessage({ action: 'setInitValue', values: { id: 'exportToCanvas', pngScale: 1, pdfScale: 1 } }, '*');
+
+    // 监听iframe返回的消息
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'screenshotData') {
+        const imgData = event.data.data;
+        console.log(imgData);
+        document.getElementById('img').src = imgData;
+      }
+    });
+  }
+</script>
