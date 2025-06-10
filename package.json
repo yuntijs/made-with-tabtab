@@ -1,13 +1,18 @@
 {
   "name": "@yuntijs/made-with-tabtab",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
   "scripts": {
+    "ci": "npm run lint && npm run type-check",
     "dev": "vite",
     "build": "tsc -b && vite build --mode production",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "release": "semantic-release",
+    "type-check": "tsc -p tsconfig.app.json"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",
@@ -15,10 +20,22 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@yuntijs/lint": "^1.7.0",
     "eslint": "^9.25.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.0.0",
+    "semantic-release": "^21",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }

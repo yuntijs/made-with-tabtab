@@ -6,9 +6,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/index.ts',
-      name: '@yuntijs/made-with-tabtab',
+      name: 'MadeWithTabTab',
       formats: ['umd'],
-      fileName: (format) => `@yuntijs/made-with-tabtab.${format}.js`
+      fileName: (format) => `made-with-tabtab.${format}.js`
     }
   },
 })
