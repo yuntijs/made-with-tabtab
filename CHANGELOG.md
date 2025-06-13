@@ -2,6 +2,19 @@
 
 # Changelog
 
+## [1.0.3](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.2...v1.0.3) (2025-06-13)
+
+
+### 🐛 Bug Fixes
+
+* 截图过滤菜单按钮 ([d42d16f](https://github.com/yuntijs/made-with-tabtab/commit/d42d16f))
+* 样式增加动画 ([b52f643](https://github.com/yuntijs/made-with-tabtab/commit/b52f643))
+
+
+### 🔧 Continuous Integration
+
+* Add test workflow ([85c476e](https://github.com/yuntijs/made-with-tabtab/commit/85c476e))
+
 ## [1.0.2](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.1...v1.0.2) (2025-06-10)
 
 
