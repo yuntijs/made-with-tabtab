@@ -34,7 +34,7 @@ export class tabtabTools {
 
   createElement = () => {
     const div = document.createElement('div');
-    div.innerHTML = `<div class="tabtab-tools-wrapper">
+    div.innerHTML = `<div class="tabtab-tools-wrapper" data-html2canvas-ignore="true">
     <div class="tabtab-active-wrapper">
         <div class="tabtab-menu-wrap">
             <div class="tabtab-menu tabtab-menu-transform exportPng" title="导出为图片">
@@ -70,42 +70,23 @@ export class tabtabTools {
     }
   }
 
-  hideToolsIcon = (element?: HTMLElement) => {
-    const ele = element?.querySelector('.tabtab-active-wrapper') as HTMLElement;
-    if (ele) {
-      ele.style.display = 'none';
-    }
-  }
-
   exportPng = async () => {
     const element = document.body || document.documentElement;
     if (!element) return console.warn('Element not found!');
-    const clone = element.cloneNode(true) as HTMLElement;
-    this.hideToolsIcon(clone);
-    clone.style.position = 'absolute';
-    clone.style.left = '-9999px';
-    clone.style.top = '0';
-    clone.style.width = `${this.imgWidth}px`;
-    document.body.appendChild(clone);
-    const contentHeight = clone.scrollHeight * this.imgScale;
-    const contentWidth = clone.scrollWidth;
-
-    try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        logging: false,
-        useCORS: true,
-        allowTaint: true,
-        scrollY: 0,
-        windowHeight: contentHeight,
-        windowWidth: contentWidth,
-        height: contentHeight,
-        width: contentWidth,
-      });
-      return canvas.toDataURL('image/png', 1);
-    } finally {
-      document.body.removeChild(clone);
-    }
+    const contentHeight = element.scrollHeight * this.imgScale;
+    const contentWidth = element.scrollWidth;
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      logging: false,
+      useCORS: true,
+      allowTaint: true,
+      scrollY: 0,
+      windowHeight: contentHeight,
+      windowWidth: contentWidth,
+      height: contentHeight,
+      width: contentWidth,
+    });
+    return canvas.toDataURL('image/png', 1);
   }
 
   handleScreenHotPng = async (options?: { filename?: string, isDownLoad?: boolean }) => {
@@ -130,16 +111,16 @@ export class tabtabTools {
     return data;
   }
 
-  scrollToBottom = async () => {
+  scrollToBottom = () => {
     let isScrollTo = false;
-    return new Promise(async resolve => {
+    return new Promise(resolve => {
       window.onscroll = async () => {
         const scrollPosition = window.innerHeight + window.scrollY;
         const totalHeight = document.body.offsetHeight;
         if (!isScrollTo && scrollPosition >= totalHeight) {
           console.warn('滚动至底部', scrollPosition, totalHeight);
           isScrollTo = true;
-          await this.sleep(200);
+          await this.sleep(500);
           window.onscroll = null;
           resolve(true);
         }
@@ -149,11 +130,12 @@ export class tabtabTools {
         top: ele.scrollHeight,
         behavior: 'smooth'
       });
-      await this.sleep(5000);
-      if (!isScrollTo) {
-        window.onscroll = null;
-        resolve(true);
-      }
+      this.sleep(5000).then(() => {
+        if (!isScrollTo) {
+          window.onscroll = null;
+          resolve(true);
+        }
+      });
     });
   }
 
