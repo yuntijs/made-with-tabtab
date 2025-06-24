@@ -2,22 +2,22 @@ import html2canvas from 'html2canvas';
 
 export interface tabtabToolsProps {
   imgScale?: number;
-  imgWidth?: number;
 }
 
 export class tabtabTools {
   imgScale: number;
-  imgWidth: number;
+  loading: boolean;
+  tasks: Promise<boolean>[];
 
   constructor(options?: tabtabToolsProps) {
-    const { imgScale, imgWidth } = options || {};
+    const { imgScale } = options || {};
     this.imgScale = imgScale || 1;
-    this.imgWidth = imgWidth || 1600;
+    this.loading = false;
+    this.tasks = [];
   }
 
   setInitValue = (options?: tabtabToolsProps) => {
     if (options?.imgScale) this.imgScale = options?.imgScale;
-    if (options?.imgWidth) this.imgWidth = options?.imgWidth;
   }
 
   addStyle = (content: string) => {
@@ -54,12 +54,44 @@ export class tabtabTools {
             <svg fill='currentColor' width="1.127em" height="1em" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 231.06 190.75"><rect  x="46.05" y="5.57" width="46.31" height="138.96" /><rect x="0" y="144.44" width="46.31" height="46.3" /><path d="M138.92,46.3V0H0v46.3c46.31,0,92.61,0,138.91,0" /><rect x="138.73" y="46.21" width="46.3" height="111.68" /><rect x="184.76" y="0" width="46.3" height="46.3" /> <path d="M92.15,144.45v46.3h138.91v-46.3c-46.31,0-92.61,0-138.91,0" /></svg>
         </div>
     </div>
+    <div class="tabtab-tools-expand">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+    </div>
 </div>`;
     document.body.appendChild(div);
     const pngIcon = document.querySelector('.exportPng') as HTMLElement;
     const pdfIcon = document.querySelector('.exportPdf') as HTMLElement;
+    const expandBtn = document.querySelector('.tabtab-tools-expand') as HTMLElement;
     if (pngIcon) pngIcon.onclick = () => this.handleScreenHotPng();
     if (pdfIcon) pdfIcon.onclick = () => this.exportPdf();
+    if (expandBtn) expandBtn.onclick = () => {
+      this.handleLoading({
+        selectors: '.tabtab-tools-wrapper',
+        addClass: 'tabtab-tools-wrapper-expand',
+      });
+      const ele = document.querySelector('.tabtab-tools-wrapper') as HTMLElement;
+      if (ele) {
+        ele.onmouseleave = (e) => {
+          e.stopPropagation();
+          if (this.loading) {
+            return this.handleAddTask(new Promise((resolve) => {
+              this.tasks.shift();
+              setTimeout(() => ele.classList.remove('tabtab-tools-wrapper-expand'), 1000);
+              resolve(true);
+            }));
+          }
+          ele.classList.remove('tabtab-tools-wrapper-expand');
+        };
+      }
+    };
+  }
+
+  handleAddTask = (task: Promise<boolean>) => {
+    this.tasks.push(task);
+  }
+
+  handleTasks = async () => {
+    return Promise.all(this.tasks);
   }
 
   handleLoading = ({ selectors, addClass, removeClass }: { selectors: string, addClass?: string, removeClass?: string }) => {
@@ -91,6 +123,7 @@ export class tabtabTools {
 
   handleScreenHotPng = async (options?: { filename?: string, isDownLoad?: boolean }) => {
     const { filename = 'screenshot.png', isDownLoad = true } = options || {};
+    this.loading = true;
     this.handleLoading({
       selectors: '.exportPng',
       addClass: 'show',
@@ -104,25 +137,31 @@ export class tabtabTools {
       link.click();
       link.remove();
     }
+    this.loading = false;
     this.handleLoading({
       selectors: '.exportPng',
       removeClass: 'show',
     });
+    await this.handleTasks();
     return data;
   }
 
   scrollToBottom = () => {
-    let isScrollTo = false;
     return new Promise(resolve => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        window.onscroll = null;
+        return resolve(true);
+      }
+      let isScrollTo = false;
       window.onscroll = async () => {
         const scrollPosition = window.innerHeight + window.scrollY;
         const totalHeight = document.body.offsetHeight;
         if (!isScrollTo && scrollPosition >= totalHeight) {
-          console.warn('滚动至底部', scrollPosition, totalHeight);
+          console.warn('滚动至底部');
           isScrollTo = true;
           await this.sleep(500);
           window.onscroll = null;
-          resolve(true);
+          return resolve(true);
         }
       }
       const ele = document.body || document.documentElement;
@@ -142,15 +181,18 @@ export class tabtabTools {
   sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   exportPdf = async () => {
+    this.loading = true;
     this.handleLoading({
       selectors: '.exportPdf',
       addClass: 'show',
     });
     await this.scrollToBottom();
+    this.loading = false;
     this.handleLoading({
       selectors: '.exportPdf',
       removeClass: 'show',
     });
+    await this.handleTasks();
     window.print();
   }
 }
@@ -168,15 +210,48 @@ window.addEventListener('load', () => {
         .tabtab-tools-wrapper {
             position: fixed;
             z-index: 1000;
-            right: 20px;
-            bottom: 20px;
-            width: 40px;
+            right: 0;
+            top: 50%;
+            width: 50px;
+            height: 140px;
             display: flex;
-            justify-content: center;
             align-items: end;
+            transform: translate(60px, -50%);
+            transition: transform 0.2s ease-out;
+            transition-delay: 0.4s;
         }
+        .tabtab-tools-wrapper-expand {
+            transform: translate(0, -50%);
+            transition-delay: 0s;
+        }
+        .tabtab-tools-wrapper-expand .tabtab-tools-expand{
+            opacity: 0;
+            cursor: pointer;
+            transition: opacity 0s 0s;
+        }
+
         .tabtab-active-wrapper {
+            height: 100%;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+        }
+        .tabtab-tools-expand {
+            position: absolute;
+            height: 32px;
+            width: 20px;
+            border-radius: 4px 0 0 4px;
+            left: -30px;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.15s 0.75s ease-out;
+        }
+        .tabtab-tools-expand:hover {
+           background: #333;
+           color: #fff;
         }
         .tabtab-tools {
             position: relative;
@@ -221,18 +296,15 @@ window.addEventListener('load', () => {
         .scale-02 {
             transform: scale(1.2);
         }
-        .tabtab-tools-wrapper:hover {
-            height: 140px;
-        }
-        .tabtab-tools-wrapper:hover .tabtab-menu-transform:nth-of-type(1) {
+        .tabtab-active-wrapper:hover .tabtab-menu-transform:nth-of-type(1) {
             transform: translateY(-100px) scale(1.1);
             opacity: 1;
         }
-        .tabtab-tools-wrapper:hover .tabtab-menu-transform:nth-of-type(2) {
+        .tabtab-active-wrapper:hover .tabtab-menu-transform:nth-of-type(2) {
             transform: translateY(-50px) scale(1.1);
             opacity: 1;
         }
-        .tabtab-tools-wrapper:hover .tabtab-tools {
+        .tabtab-active-wrapper:hover .tabtab-tools {
             transform: scale(1.1);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
         }
@@ -248,7 +320,7 @@ window.addEventListener('load', () => {
             display: flex;
         }
         .show .tabtab-loading {
-          display: flex;
+            display: flex;
         }
         .show.tabtab-menu-transform {
             z-index: 100;

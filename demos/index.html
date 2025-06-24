@@ -20,15 +20,48 @@
         .tabtab-tools-wrapper {
             position: fixed;
             z-index: 1000;
-            right: 20px;
-            bottom: 20px;
-            width: 40px;
+            right: 0;
+            top: 50%;
+            width: 50px;
+            height: 140px;
             display: flex;
-            justify-content: center;
             align-items: end;
+            transform: translate(60px, -50%);
+            transition: transform 0.2s ease-out;
+            transition-delay: 0.4s;
         }
+        .tabtab-tools-wrapper-expand {
+            transform: translate(0, -50%);
+            transition-delay: 0s;
+        }
+        .tabtab-tools-wrapper-expand .tabtab-tools-expand{
+            opacity: 0;
+            cursor: pointer;
+            transition: opacity 0s 0s;
+        }
+
         .tabtab-active-wrapper {
+            height: 100%;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+        }
+        .tabtab-tools-expand {
+            position: absolute;
+            height: 32px;
+            width: 20px;
+            border-radius: 4px 0 0 4px;
+            left: -30px;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.15s 0.75s ease-out;
+        }
+        .tabtab-tools-expand:hover {
+           background: #333;
+           color: #fff;
         }
         .tabtab-tools {
             position: relative;
@@ -73,18 +106,15 @@
         .scale-02 {
             transform: scale(1.2);
         }
-        .tabtab-tools-wrapper:hover {
-            height: 140px;
-        }
-        .tabtab-tools-wrapper:hover .tabtab-menu-transform:nth-of-type(1) {
+        .tabtab-active-wrapper:hover .tabtab-menu-transform:nth-of-type(1) {
             transform: translateY(-100px) scale(1.1);
             opacity: 1;
         }
-        .tabtab-tools-wrapper:hover .tabtab-menu-transform:nth-of-type(2) {
+        .tabtab-active-wrapper:hover .tabtab-menu-transform:nth-of-type(2) {
             transform: translateY(-50px) scale(1.1);
             opacity: 1;
         }
-        .tabtab-tools-wrapper:hover .tabtab-tools {
+        .tabtab-active-wrapper:hover .tabtab-tools {
             transform: scale(1.1);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
         }
@@ -93,6 +123,7 @@
         }
         .tabtab-loading {
             display: none;
+            z-index: 100;
             animation: tabloading 1s linear infinite;
         }
         .show {
@@ -122,7 +153,7 @@
 </head>
 <body>
 <!--<div id="exportToCanvas"></div>-->
-<div class="tabtab-tools-wrapper">
+<div class="tabtab-tools-wrapper" data-html2canvas-ignore="true">
     <div class="tabtab-active-wrapper">
         <div class="tabtab-menu-wrap">
             <div class="tabtab-menu tabtab-menu-transform exportPng" title="导出为图片">
@@ -142,6 +173,9 @@
             <svg fill='currentColor' width="1.127em" height="1em" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 231.06 190.75"><rect  x="46.05" y="5.57" width="46.31" height="138.96" /><rect x="0" y="144.44" width="46.31" height="46.3" /><path d="M138.92,46.3V0H0v46.3c46.31,0,92.61,0,138.91,0" /><rect x="138.73" y="46.21" width="46.3" height="111.68" /><rect x="184.76" y="0" width="46.3" height="46.3" /> <path d="M92.15,144.45v46.3h138.91v-46.3c-46.31,0-92.61,0-138.91,0" /></svg>
         </div>
     </div>
+    <div class="tabtab-tools-expand">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+    </div>
 </div>
 </body>
 </html>
@@ -157,6 +191,7 @@
 
       const pngIcon = document.querySelector('.exportPng');
       const pdfIcon = document.querySelector('.exportPdf')
+      const expandBtn = document.querySelector('.tabtab-tools-expand')
       if (pngIcon) pngIcon.onclick = () => {
           handleLoading({
               selectors: '.exportPng',
@@ -180,6 +215,17 @@
                   removeClass: 'show',
               });
           }, 6000);
+      };
+      if (expandBtn) expandBtn.onclick = () => {
+          handleLoading({
+              selectors: '.tabtab-tools-wrapper',
+              addClass: 'tabtab-tools-wrapper-expand',
+          });
+          const ele = document.querySelector('.tabtab-tools-wrapper');
+          ele.onmouseleave = (e) => {
+              e.stopPropagation();
+              ele.classList.remove('tabtab-tools-wrapper-expand');
+          };
       };
     // let str = '<div>'
     // Array(100).fill(6).map((item, i) => {
