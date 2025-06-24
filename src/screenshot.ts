@@ -201,7 +201,7 @@ window.addEventListener('load', () => {
   const tools = new tabtabTools();
   tools.addStyle(`@media print {
             .tabtab-active-wrapper {
-                display: none;
+                display: none !important;
             }
         }
         img,svg {
