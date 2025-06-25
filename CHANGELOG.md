@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [1.0.6](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.5...v1.0.6) (2025-06-25)
+
+
+### 🐛 Bug Fixes
+
+* 菜单按钮 icon 更新 ([cc8a039](https://github.com/yuntijs/made-with-tabtab/commit/cc8a039))
+
 ## [1.0.5](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.4...v1.0.5) (2025-06-24)
 
 
