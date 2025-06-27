@@ -1,4 +1,5 @@
 import html2canvas from 'html2canvas';
+import { isMobileDevice } from './utils.ts';
 
 export interface tabtabToolsProps {
   imgScale?: number;
@@ -37,14 +38,14 @@ export class tabtabTools {
     div.innerHTML = `<div class="tabtab-tools-wrapper" data-html2canvas-ignore="true">
     <div class="tabtab-active-wrapper">
         <div class="tabtab-menu-wrap">
-            <div class="tabtab-menu tabtab-menu-transform exportPng" title="导出为图片">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-down-icon lucide-image-down"><path d="M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10l-3.1-3.1a2 2 0 0 0-2.814.014L6 21"/><path d="m14 19 3 3v-5.5"/><path d="m17 22 3-3"/><circle cx="9" cy="9" r="2"/></svg>
+            <div class="tabtab-menu tabtab-menu-transform exportPdf ${isMobileDevice() ? 'hide' : ''}" title="导出为pdf">
+                <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" stroke="#ffffff" width="1em" height="1em"><path d="M137.157 887.116V82.796h347.155v258.319h258.397v238.599h70.257V310.401c0.356-2.87 0.356-5.763 0-8.632v-10.693L533.546 12.539H66.9v944.833h627.314l-61.063-70.257H137.157z m417.411-616.257V132.212l138.166 138.647H554.568z" p-id="1538"></path><path d="M852.719 778.146v-178.89h-169.64v178.891H565.488L772.007 1015.8l197.332-237.654h-116.62z m-139.031 70.257h39.647V669.512h29.127v178.891h41.616l-52.824 61.329-57.566-61.329z" p-id="1539"></path><path d="M177.688 727.33c-4.961 9.028-6.93 22.269-2.395 34.11 4.518 11.793 13.874 19.53 23.555 24.581 7.238 3.804 14.877 5.428 22.484 5.428 13.917 0 27.728-5.436 38.797-12.905 17.131-11.56 32.417-28.445 47.744-49.064 7.761-10.441 13.914-27.38 21.502-39.583 24.481-10.883 140.908-50.095 176.072-57.762 29.457 19.888 60.791 35.234 94.951 35.234 19.346 0 34.277-0.812 48.868-8.747 14.591-7.935 23.408-26.992 23.408-41.538 0-11.851-5.222-24.407-13.439-32.546-8.216-8.139-18.047-12.408-28.05-15.1-11.294-3.039-23.436-4.265-36.561-4.265-10.125 0-20.836 0.73-32.196 1.919-13.811 1.447-32.211 8.713-47.549 11.631-2.021-1.64-4.048-2.323-6.06-4.056-31.216-26.904-60.432-64.057-82.099-100.962-1.337-2.278-1.117-3.733-2.395-6.011 5.252-19.792 15.642-42.707 17.983-60.059 3.226-23.907 3.93-44.839-1.857-64.017-2.893-9.589-7.791-19.212-16.322-26.682-8.531-7.47-20.501-11.533-31.716-11.533-18.823 0-38.217 10.686-46.816 26.438-8.599 15.752-9.098 32.702-6.988 50.285 3.326 27.717 15.922 59.176 32.253 91.237-8.12 27.429-44.371 127.058-62.713 158.035-60.942 19.128-113.434 64.947-130.461 95.932z m279.477-134.534c-25.651 6.833-82.997 22.548-88.354 24.483 7.656-15.905 31.271-71.607 36.651-86.448 15.402 22.21 32.569 42.846 51.703 61.965z m-68.386-236.397l0.024-0.001c2.539 0 4.315 19.321 3.856 30.809-0.598-2.978-10.419-30.49-3.88-30.808zM276.567 699.903s-15.293 22.941-20.529 22.941a1.35 1.35 0 0 1-0.823-0.254c-6.674-4.893-0.891-10.231 21.352-22.687z m316.062-85.823c-0.318 3.228-1.672 4.844-4.527 4.844-4.428 0-12.468-3.884-25.873-11.663 0 0 30.909 1.656 30.4 6.819z" fill="#ffffff" stroke="#ffffff"></path></svg>
                 <div class="tabtab-menu tabtab-loading">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle-icon lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                 </div>
             </div>
-            <div class="tabtab-menu tabtab-menu-transform exportPdf" title="导出为pdf">
-                <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" stroke="#ffffff" width="1em" height="1em"><path d="M137.157 887.116V82.796h347.155v258.319h258.397v238.599h70.257V310.401c0.356-2.87 0.356-5.763 0-8.632v-10.693L533.546 12.539H66.9v944.833h627.314l-61.063-70.257H137.157z m417.411-616.257V132.212l138.166 138.647H554.568z" p-id="1538"></path><path d="M852.719 778.146v-178.89h-169.64v178.891H565.488L772.007 1015.8l197.332-237.654h-116.62z m-139.031 70.257h39.647V669.512h29.127v178.891h41.616l-52.824 61.329-57.566-61.329z" p-id="1539"></path><path d="M177.688 727.33c-4.961 9.028-6.93 22.269-2.395 34.11 4.518 11.793 13.874 19.53 23.555 24.581 7.238 3.804 14.877 5.428 22.484 5.428 13.917 0 27.728-5.436 38.797-12.905 17.131-11.56 32.417-28.445 47.744-49.064 7.761-10.441 13.914-27.38 21.502-39.583 24.481-10.883 140.908-50.095 176.072-57.762 29.457 19.888 60.791 35.234 94.951 35.234 19.346 0 34.277-0.812 48.868-8.747 14.591-7.935 23.408-26.992 23.408-41.538 0-11.851-5.222-24.407-13.439-32.546-8.216-8.139-18.047-12.408-28.05-15.1-11.294-3.039-23.436-4.265-36.561-4.265-10.125 0-20.836 0.73-32.196 1.919-13.811 1.447-32.211 8.713-47.549 11.631-2.021-1.64-4.048-2.323-6.06-4.056-31.216-26.904-60.432-64.057-82.099-100.962-1.337-2.278-1.117-3.733-2.395-6.011 5.252-19.792 15.642-42.707 17.983-60.059 3.226-23.907 3.93-44.839-1.857-64.017-2.893-9.589-7.791-19.212-16.322-26.682-8.531-7.47-20.501-11.533-31.716-11.533-18.823 0-38.217 10.686-46.816 26.438-8.599 15.752-9.098 32.702-6.988 50.285 3.326 27.717 15.922 59.176 32.253 91.237-8.12 27.429-44.371 127.058-62.713 158.035-60.942 19.128-113.434 64.947-130.461 95.932z m279.477-134.534c-25.651 6.833-82.997 22.548-88.354 24.483 7.656-15.905 31.271-71.607 36.651-86.448 15.402 22.21 32.569 42.846 51.703 61.965z m-68.386-236.397l0.024-0.001c2.539 0 4.315 19.321 3.856 30.809-0.598-2.978-10.419-30.49-3.88-30.808zM276.567 699.903s-15.293 22.941-20.529 22.941a1.35 1.35 0 0 1-0.823-0.254c-6.674-4.893-0.891-10.231 21.352-22.687z m316.062-85.823c-0.318 3.228-1.672 4.844-4.527 4.844-4.428 0-12.468-3.884-25.873-11.663 0 0 30.909 1.656 30.4 6.819z" fill="#ffffff" stroke="#ffffff"></path></svg>
+            <div class="tabtab-menu tabtab-menu-transform exportPng" title="导出为图片">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-down-icon lucide-image-down"><path d="M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10l-3.1-3.1a2 2 0 0 0-2.814.014L6 21"/><path d="m14 19 3 3v-5.5"/><path d="m17 22 3-3"/><circle cx="9" cy="9" r="2"/></svg>
                 <div class="tabtab-menu tabtab-loading">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle-icon lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                 </div>
@@ -102,7 +103,7 @@ export class tabtabTools {
     }
   }
 
-  exportPng = async () => {
+  exportPng = async (fileType: string) => {
     const element = document.body || document.documentElement;
     if (!element) return console.warn('Element not found!');
     const contentHeight = element.scrollHeight * this.imgScale;
@@ -118,22 +119,27 @@ export class tabtabTools {
       height: contentHeight,
       width: contentWidth,
     });
+    if (fileType === 'blob') {
+      return new Promise((resolve) => {
+        canvas.toBlob((blob: Blob | null)=> resolve(blob), 'image/png', 1);
+      })
+    }
     return canvas.toDataURL('image/png', 1);
   }
 
-  handleScreenHotPng = async (options?: { filename?: string, isDownLoad?: boolean }) => {
-    const { filename = 'screenshot.png', isDownLoad = true } = options || {};
+  handleScreenHotPng = async (options?: { filename?: string, fileType?: string, isDownLoad?: boolean }) => {
+    const { filename = 'tabtab_screenshot.png', fileType = 'blob', isDownLoad = true } = options || {};
     this.loading = true;
     this.handleLoading({
       selectors: '.exportPng',
       addClass: 'show',
     });
     await this.scrollToBottom();
-    const data = await this.exportPng();
-    if (isDownLoad && data) {
+    const data = await this.exportPng(fileType);
+    if (isDownLoad && data instanceof Blob) {
       const link = document.createElement('a');
       link.download = filename;
-      link.href = data as string;
+      link.href = URL.createObjectURL(data);
       link.click();
       link.remove();
     }
@@ -342,7 +348,7 @@ window.addEventListener('load', () => {
   tools.createElement();
   window.addEventListener('message', async (event) => {
     if (event.data.action === 'prepareScreenshot') {
-      const data = await tools.handleScreenHotPng({ isDownLoad: false });
+      const data = await tools.handleScreenHotPng({ isDownLoad: false, fileType: event.data.fileType || 'string' });
       window.parent.postMessage({ type: 'screenshotData', data: data}, '*');
     } else if (event.data.action === 'prepareGeneratePdf') {
       const data = await tools.exportPdf();
