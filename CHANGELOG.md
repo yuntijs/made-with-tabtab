@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [1.0.7](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.6...v1.0.7) (2025-06-27)
+
+
+### 🐛 Bug Fixes
+
+* 移动端截图 base64 过大下载失败修复 ([3c7b972](https://github.com/yuntijs/made-with-tabtab/commit/3c7b972))
+
 ## [1.0.6](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.5...v1.0.6) (2025-06-25)
 
 
