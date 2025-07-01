@@ -108,6 +108,17 @@ export class tabtabTools {
     if (!element) return console.warn('Element not found!');
     const contentHeight = element.scrollHeight * this.imgScale;
     const contentWidth = element.scrollWidth;
+    const innerHeight = window.innerHeight;
+    const content = `
+      .h-screen,.h-svh,.h-lvh,.h-dvh { height: ${innerHeight}px !important; };
+      .min-h-screen,.min-h-svh,.min-h-lvh,.min-h-dvh { min-height: ${innerHeight}px !important; };
+      .max-h-screen,.max-h-svh,.max-h-lvh,.max-h-dvh { max-height: ${innerHeight}px !important; };
+    `
+    const id = 'tabtab_custom_style';
+    const style = id && document.getElementById(id) || document.createElement('style');
+    if (id) style.id = id;
+    style.innerHTML = content;
+    document.head.appendChild(style);
     const canvas = await html2canvas(element, {
       scale: 2,
       logging: false,
@@ -118,6 +129,8 @@ export class tabtabTools {
       windowWidth: contentWidth,
       height: contentHeight,
       width: contentWidth,
+    }).finally(() => {
+      style.remove();
     });
     if (fileType === 'blob') {
       return new Promise((resolve) => {
@@ -205,7 +218,28 @@ export class tabtabTools {
 
 window.addEventListener('load', () => {
   const tools = new tabtabTools();
-  tools.addStyle(`@media print {
+  tools.addStyle(`* {
+            scrollbar-color: hsl(0 0% 100%) hsl(0 0% 100%);
+            scrollbar-width: thin;
+        }
+        *:hover {
+            scrollbar-color: hsl(220 13% 91%) hsl(0 0% 100%);
+        }
+        ::-webkit-scrollbar {
+            width: 0.5em;
+            height: 0.5em;
+        }
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+        }
+        :hover::-webkit-scrollbar-thumb {
+            background-clip: content-box;
+            border: 3px solid transparent;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+        @media print {
             .tabtab-active-wrapper {
                 display: none !important;
             }
@@ -218,7 +252,7 @@ window.addEventListener('load', () => {
             z-index: 1000;
             right: 0;
             top: 50%;
-            width: 50px;
+            width: 60px;
             height: 140px;
             display: flex;
             align-items: end;
@@ -246,14 +280,17 @@ window.addEventListener('load', () => {
         .tabtab-tools-expand {
             position: absolute;
             height: 32px;
-            width: 20px;
-            border-radius: 4px 0 0 4px;
+            width: 32px;
+            border-radius: 6px 0 0 6px;
             left: -30px;
             bottom: 0;
             display: flex;
             align-items: center;
             cursor: pointer;
             transition: opacity 0.15s 0.75s ease-out;
+        }
+        .tabtab-tools-expand > svg {
+            margin-right: 8px;
         }
         .tabtab-tools-expand:hover {
            background: #333;
