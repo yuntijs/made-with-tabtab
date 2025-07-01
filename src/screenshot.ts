@@ -109,15 +109,12 @@ export class tabtabTools {
     const contentHeight = element.scrollHeight * this.imgScale;
     const contentWidth = element.scrollWidth;
     const innerHeight = window.innerHeight;
-    const content = `
-      .h-screen,.h-svh,.h-lvh,.h-dvh { height: ${innerHeight}px !important; };
-      .min-h-screen,.min-h-svh,.min-h-lvh,.min-h-dvh { min-height: ${innerHeight}px !important; };
-      .max-h-screen,.max-h-svh,.max-h-lvh,.max-h-dvh { max-height: ${innerHeight}px !important; };
-    `
-    const id = 'tabtab_custom_style';
-    const style = id && document.getElementById(id) || document.createElement('style');
-    if (id) style.id = id;
-    style.innerHTML = content;
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .h-screen,.h-svh,.h-lvh,.h-dvh { height: ${innerHeight}px !important; }
+      .min-h-screen,.min-h-svh,.min-h-lvh,.min-h-dvh { min-height: ${innerHeight}px !important; }
+      .max-h-screen,.max-h-svh,.max-h-lvh,.max-h-dvh { max-height: ${innerHeight}px !important; }
+    `;
     document.head.appendChild(style);
     const canvas = await html2canvas(element, {
       scale: 2,
