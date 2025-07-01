@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [1.0.9](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.8...v1.0.9) (2025-07-01)
+
+
+### 🐛 Bug Fixes
+
+* 导出长图时 vh 单位优化 ([ffe3844](https://github.com/yuntijs/made-with-tabtab/commit/ffe3844))
+
 ## [1.0.8](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.7...v1.0.8) (2025-07-01)
 
 
