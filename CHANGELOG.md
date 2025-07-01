@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [1.0.8](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.7...v1.0.8) (2025-07-01)
+
+
+### 🐛 Bug Fixes
+
+* 导出按钮与滚动条重合，导出长图时，只有一个首页问题等优化 ([43e1356](https://github.com/yuntijs/made-with-tabtab/commit/43e1356))
+
 ## [1.0.7](https://github.com/yuntijs/made-with-tabtab/compare/v1.0.6...v1.0.7) (2025-06-27)
 
 
